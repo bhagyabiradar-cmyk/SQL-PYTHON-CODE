@@ -1,0 +1,82 @@
+import sqlite3
+
+# Connect to database
+conn = sqlite3.connect("student.db")
+cursor = conn.cursor()
+
+# Create table
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS students (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    age INTEGER,
+    marks REAL,
+    department TEXT
+)
+""")
+
+# Insert data
+students = [
+    (1, "Bhagya", 21, 87.5, "ECE"),
+    (2, "Anu", 20, 92.0, "CSE"),
+    (3, "Ravi", 21, 78.5, "ECE"),
+    (4, "Priya", 20, 95.0, "CSE"),
+    (5, "Kiran", 22, 82.0, "EEE")
+]
+
+cursor.executemany("""
+INSERT OR REPLACE INTO students
+(id, name, age, marks, department)
+VALUES (?, ?, ?, ?, ?)
+""", students)
+
+conn.commit()
+
+# Display all students
+print("\nAll Students:")
+cursor.execute("SELECT * FROM students")
+for row in cursor.fetchall():
+    print(row)
+
+# Students scoring above 85
+print("\nStudents with marks above 85:")
+cursor.execute("""
+SELECT name, marks
+FROM students
+WHERE marks > 85
+""")
+
+for row in cursor.fetchall():
+    print(row)
+
+# Find average marks using SQL
+cursor.execute("SELECT AVG(marks) FROM students")
+average = cursor.fetchone()[0]
+
+print("\nAverage Marks:", round(average, 2))
+
+# Find topper
+cursor.execute("""
+SELECT name, marks
+FROM students
+ORDER BY marks DESC
+LIMIT 1
+""")
+
+topper = cursor.fetchone()
+print("\nTopper:", topper[0])
+print("Marks:", topper[1])
+
+# Department-wise average
+print("\nDepartment-wise Average:")
+cursor.execute("""
+SELECT department, AVG(marks)
+FROM students
+GROUP BY department
+""")
+
+for department, avg_marks in cursor.fetchall():
+    print(department, round(avg_marks, 2))
+
+# Close connection
+conn.close()
