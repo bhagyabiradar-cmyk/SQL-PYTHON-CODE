@@ -1,0 +1,34 @@
+import mysql.connector
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Connect to MySQL
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="your_password",
+    database="student_db"
+)
+
+# Read SQL data into Pandas
+query = "SELECT * FROM students"
+df = pd.read_sql(query, connection)
+
+print(df)
+
+# Calculate average
+df["average"] = (
+    df["python"] + df["sql"] + df["maths"]
+) / 3
+
+print("\nStudent Averages:")
+print(df[["name", "average"]])
+
+# Data visualization
+plt.bar(df["name"], df["average"])
+plt.xlabel("Students")
+plt.ylabel("Average Marks")
+plt.title("Student Performance Analysis")
+plt.show()
+
+connection.close()
