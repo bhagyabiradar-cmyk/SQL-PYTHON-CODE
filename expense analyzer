@@ -1,0 +1,20 @@
+expenses = {
+    "Food": 250,
+    "Travel": 150,
+    "Shopping": 500,
+    "Bills": 300,
+    "Food": 200
+}
+
+total = sum(expenses.values())
+
+print("Expense Details:")
+for category, amount in expenses.items():
+    print(category, ":", amount)
+
+print("\nTotal Expense:", total)
+
+if total > 1000:
+    print("You spent more than ₹1000")
+else:
+    print("Your spending is under ₹1000")
